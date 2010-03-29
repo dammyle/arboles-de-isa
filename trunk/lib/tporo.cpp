@@ -11,16 +11,18 @@ using namespace std;
 
 TPoro::TPoro(int nx, int ny, double ent,char* nc):x(nx), y(ny), volumen(ent) 
 {
-	string c="";
-	
+	int longi = 0;
 	int i = 0;
+		
 
 	if (nc!=NULL)
 	{
-		c=nc;
-		while (i<(int)c.length() && c!="")
+		longi = strlen(nc)+1;
+		char c[longi];		
+		color = new char(longi);
+		strcpy(c,nc);
+		while (i<longi)
 		{
-			
 			if (c[i]>='A' && c[i]<='Z')
 			{
 				c[i]=c[i]+32;
@@ -28,9 +30,10 @@ TPoro::TPoro(int nx, int ny, double ent,char* nc):x(nx), y(ny), volumen(ent)
 			else c[i]=c[i];
 			i++;
 		}
-		color=(char*)c.c_str();
+		c[i]='\0';
+		strcpy(color,c);
 	}
-	else color=nc;
+	else color = nc;
 }
 
 TPoro::TPoro(const TPoro & n)
@@ -165,12 +168,14 @@ operator<< (ostream &os, const TPoro &n)
 		os.setf(ios::fixed);
 		os.precision( 2 );
 		char menos='-';
-		os <<'(' <<n.x <<',' <<n.y <<')' <<" "<<n.volumen<<" "<<menos;
+		os <<'(' <<n.x <<", " <<n.y <<')' <<" "<<n.volumen<<" "<<menos;
 	}
 	
 	if(!vacio && n.color!=NULL)
 	{
-		os <<'(' <<n.x <<' ' <<n.y <<')' <<" "<<n.volumen<<" "<<n.color;
+		os.setf(ios::fixed);
+		os.precision( 2 );
+		os <<'(' <<n.x <<", "<<n.y <<')' <<" "<<n.volumen<<" "<<n.color;
 	}
 
 	return os;

@@ -3,6 +3,7 @@
 using namespace std;
 
 #include "tpilaporo.h"
+#include "tlistaporo.h"
 
 int
 main(void)
@@ -36,10 +37,10 @@ cout<<a<<endl;
   cout << p << endl;*/
 
 //------------------------------------>>>>>>>>>>>>>>>>tad5
-/*
-  TPilaPoro p;
+
+ /*TPilaPoro p;
   TPoro a(1, 2, 3, "rojo"), b(4, 5, 6, "azul");  
-  TPoro c(9, 8, 7, "verde"), d(6, 5, 4, "amarillo");  
+  TPoro c(9, 8, 7, "rosa"), d(6, 5, 4, "amarillo");  
 
   p.Apilar(a);
   p.Apilar(b);
@@ -119,7 +120,7 @@ cout<<a<<endl;
     cout << "NO VACIO" << endl;*/
 
 //----------------------------------->>>>>>>>>>>>>>>>>>>>>>ad10
- TPilaPoro p, q;
+ /*TPilaPoro p, q;
   TPoro a(1, 2, 3, "rojo");
 
   if(p == q)
@@ -141,8 +142,31 @@ cout<<a<<endl;
   if(p == q)
     cout << "SI" << endl;
   else
-    cout << "NO" << endl;
+    cout << "NO" << endl;*/
+//*************************  TPoro p(1, 1, 1, "rojo"), q(2, 2, 2, "verde"), r(3, 3, 3, "amarillo");
+ /* TListaPoro a;
+  TListaPosicion pos;
 
+  a.Insertar(p), a.Insertar(q), a.Insertar(r);
 
+  pos = a.Ultima();
 
+  while(!pos.EsVacia())
+  {
+    cout << a.Obtener(pos) << endl;
+    pos = pos.Anterior();
+  }****************************lista poro tad1*/
+  TPoro p(1, 1, 1, "rojo"), q(2, 2, 2, "verde"), r(3, 3, 3, "amarillo");
+  TListaPoro a;
+  TListaPosicion pos;
+
+  a.Insertar(p); a.Insertar(q); a.Insertar(r);
+
+  pos = a.Ultima();
+
+  while(!pos.EsVacia())
+  {
+    cout << a.Obtener(pos) << endl;
+    pos = pos.Anterior();
+  }
 }
