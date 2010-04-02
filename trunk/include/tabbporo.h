@@ -87,6 +87,8 @@ class TABBPoro
 		//! \brief TA234Nodo *raiz
 		/*!	Raíz del arbol AVL*/
 		TNodoABB *nodo;
+		
+		bool reemplazar(TABBPoro, TABBPoro);
 		//! \brief NivelesAux
 		/*!	Método privado que devuelve el recorrido niveles en la lista pasada como argumento*/
 		void NivelesAux(TListaCom&) const;
