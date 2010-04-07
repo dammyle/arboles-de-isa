@@ -62,43 +62,29 @@ class TABBPoro
 
 		//! \brief operator+
 		/*! Suma de dos arboles binarios de busqueda:*/
-		TABBPoro operator+(TABBPoro &);
+		TABBPoro operator+(TABBPoro &) const;
 
 		//! \ brief opertor 
 		/*! Resta de dos arboles  binarios de busqueda;*/
-		TABBPoro operator-(TABBPoro &);
+		TABBPoro operator-(TABBPoro &) const;
 		
 		//! \brief Inorden
 		/*!	Devuelve el recorrido Inorden del árbol*/
 		TVectorPoro Inorden() const;
-
+		void InordenAux(TVectorPoro&, int &) const;
 		TVectorPoro Preorden() const;
-
+		void Preordenaux(TVectorPoro&, int &) const;
 		TVectorPoro Postorden() const;
-
+		void Postordenaux(TVectorPoro&, int&) const;
 		TVectorPoro Niveles() const;
-		//! \brief Borrar
-		/*!	Borra un TComplejo y devuelve true si lo consigue*/
 		bool Borrar(const TPoro&);
-		
-		bool Comprobar();
 			
 	private:
-		//! \brief TA234Nodo *raiz
-		/*!	Raíz del arbol AVL*/
 		TNodoABB *nodo;
+		bool reemplazar(TABBPoro, TABBPoro );// en el borrado, reemplazas por el menor de la iquierda
 		
-		bool reemplazar(TABBPoro, TABBPoro);
-		//! \brief NivelesAux
-		/*!	Método privado que devuelve el recorrido niveles en la lista pasada como argumento*/
-		void NivelesAux(TListaCom&) const;
-		//! \brief InordenAux
-		/*!	Método privado que devuelve el recorrido Inorden en la lista pasada como argumento*/
-		void InordenAux(TListaCom&) const;
 };
 
-//! \class TA234Nodo
-/*!	\brief Clase que implementa un nodo de un árbol 234*/
 class TNodoABB
 {
 	friend class TABBPoro;
@@ -129,67 +115,39 @@ class TNodoABB
 
 class TNodoABB;
 
-//! \class TA234Cola
-/*!	\brief Clase que implementa una cola de punteros a TA234Nodo*/
-class TA234Cola
+class TColaABBPoro
 {
+	friend ostream &operator<<(ostream&, TColaABBPoro&);
 	public:
-		//! \brief Constructor por defecto de TA234Cola
-		/*!	Crea una cola de punteros a TA234Nodo vacía*/
-		TA234Cola():principio(NULL), fin(NULL){};
-		//! \brief Destructor de TA234Cola
-		/*!	Libera la memoria de una cola*/
-		~TA234Cola();
-		//! \brief Encolar
-		/*!	Añade un puntero a TA234Com al final de la cola*/
-		void Encolar(const TA234Com* a);
-		//! \brief EsVacia
-		/*!	Devuelve true si la cola es vacía*/
-		TA234Com* Desencolar();
-		//! \brief Desencolar
-		/*!	Borra el primer elemento de la cola*/
+		TColaABBPoro():primero(NULL), ultimo(NULL){};
+		~TColaABBPoro();
+		TColaABBPoro(TColaABBPoro&);
+		TColaABBPoro& operator=(TColaABBPoro&);
+		bool Encolar(const TABBPoro* a);
+		bool Desencolar();
 		bool Esvacia(){return principio==NULL;};
+		bool operator==(TColaABBPoro& );
+		TColaABBPoro operator+(TColaABBPoro &);
+		TABBPoro* Cabeza();
+		int Longitud();
 		
 	private:
-		//! \brief TA234CNodo* principio
-		/*!	Cabeza de la cola*/
-		TA234ColaNodo *principio;
-		//! \brief TA234CNodo* fin
-		/*!	Final de la cola*/
-	
-		TA234ColaNodo *fin;
+		TECAP *primero;
+		TECAP *ultimo;
 };
 
-
-
-//! \class TA234ColaNodo
-/*!	\brief Clase que implementa un nodo de cola de punteros a T234Com*/
-class TA234ColaNodo
+class TECAP
 {
-	friend class TA234Cola;
 	public:
-		//! \brief Constructor por defecto de TA234ColaNodo
-		/*!	Crea un nodo de cola de punteros a TA234ColaNodo vacío*/
-		TA234ColaNodo():n(NULL),sig(NULL){};
-		//! \brief Constructor sobrecargado de TA234ColaNodo
-		/*!	Crea un nodo de cola de punteros a TA234ColaNodo con el puntero a árbol a*/
-		TA234ColaNodo(TA234Com* a):n(a),sig(NULL){};
-		//! \brief Constructor de copia TA234ColaNodo
-		/*!	Crea un nodo de cola de punteros a TA234ColaNodo copia de otro*/
-		TA234ColaNodo(const TA234ColaNodo& nodo);
-		//! \brief Destructor de TA234ColaNodo
-		/*! Libera la memoria de un nodo*/
-		~TA234ColaNodo();
-		
+		TECAP():arbol(NULL),sig(NULL){};
+		TECAP(const TECAP &);
+		~TECAP();
+		TECAP& operator=(TECPA&);
+	
 	private:
-		//! \brief TA234ColaNodo* n
-		/*!	Puntero a árbol que almacenamos*/
-		TA234Com *n;
-		//! \brief TA234ColaNodo* sig
-		/*!	Siguiente elemento de la cola*/
-		TA234ColaNodo *sig;
+		TABBPoro* arbol;
+		TECAP* sig;
 };
-
 
 
 #endif

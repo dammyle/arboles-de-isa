@@ -138,7 +138,7 @@ TABBPoro::Insertar(const TPoro &poro)
 		}
 		else
 		{
-			if (nodo->item > poro)
+			if (nodo->item.Volumen() > poro.Volumen())
 			{
 				ret = nodo->iz.Insertar(c);
 			}
@@ -218,6 +218,100 @@ TABBPoro::Buscar(const TPoro&) const
 	return enontrado;
 }
 
+TVectorPoro 
+TABBPoro::Inorden() const
+{
+	int pos=1;
+	
+	TVectorPoro ret(Nodos());
+	
+	InordenAux(ret,pos);
+	
+	return ret;
+}
+
+void 
+TABBPoro::InordenAux(TVectorPoro rec, int pos) const
+{
+	if (nodo!= NULL)
+	{
+		nodo->iz.InordenAux(rec, pos+1);
+		rec.Insertar(nodo->item);
+		nodo->de.InordenAux(rec,pos+1);
+	}
+}
+
+TVectorPoro
+TABBPoro::Preorden() const
+{
+		int pos=1;
+		
+		TVectorPoro ret(Nodos());
+		PreordenAux(ret, pos);
+		return ret;
+}
+
+void
+TABBPoro::PreordenAux(TVectorPoro ret, int pos) const
+{
+		if (nodo!=NULL)
+		{
+			ret.Insertar(nodo->item);
+			nodo->iz.PreordenAux(ret,pos+1);
+			nodo->de.PreordenAux(ret, pos+1);
+		}	
+}
+
+TVectorPoro
+TABBPoro::Postorden() const
+{
+		int pos=1;
+		TVectorPoro ret(Nodo());
+		PostordenAux(ret,pos);
+		
+		return ret;
+}
+
+void
+TABBPoro::PostordenAux(TVectorPoro ret, int pos)
+{
+		if (nodo!=NULL)
+		{
+			nodo->iz.PostordenAux(ret, pos+1);
+			nodo->de.PostordenAux(ret, pos+1);
+			ret.Insertar(nodo->item);
+		}
+}
+
+TVectorPoro 
+TABBPoro::Niveles() const
+{
+	TVectorPoro ret;
+	TColaABBPoro c;
+	TABBPoro *aux;
+	c.Encolar((TABBPoro*)this);
+	while (!c.EsVacia())
+	{
+		aux = c.Cabeza();
+		c.Desencolar();
+		if (aux != NULL && aux->nodo != NULL)
+		{
+			ret.Insertar(aux->nodo->item);
+
+			if (aux->nodo->iz.nodo != NULL)
+			{
+				c.Encolar(&aux->nodo->iz);
+			}
+			if (aux->nodo->de.nodo != NULL)
+			{
+				c.Encolar(&aux->nodo->de);
+			}
+		}
+	}
+	return ret;
+}
+
+
 int
 TABBPoro::Altura() const
 {
@@ -272,4 +366,174 @@ TABBPoro::NodosHoja() const
 		}
 	}
 	return n;
+}
+
+
+TABBPoro
+TABBPoro::operator+(TABBPoro& de) const
+{
+	TABBPoro *iz=new TABBPoro((TABBPoro*)this);
+	
+	TVectorPoro opde(de.Niveles());
+	
+	int i=0;
+	
+	while(i< opde.Longitud())
+	{
+			iz->Insertar(opde[i]);
+	}
+	return opde;
+}
+
+TABBPoro
+TABBPoro::operator-(TABBPoro& de) const//mirar que esto no sabemos muy  bien como funciona
+{
+	TABBPoro *iz=new TABBPoro((TABBPoro*)this);
+	
+	TVectorPoro opde(de.Niveles());
+	
+	int i=0;
+	
+	while(i< opde.Longitud())
+	{
+			iz->Insertar(opde[i]);
+	}
+	return opde;
+}
+//////////////////////////////////////Cola////////////////////
+TColaABBPoro::TColaABBPoro(const TColaABBPoro &c)
+{
+	TColaABBPoro* aux=c.primero;
+	if (c.primero==NULL)
+	{
+		primero=ultimo=NULL;
+	}
+	else
+	{
+		ultimo=primero=new TECAP(*aux);
+		aux=aux->sig;
+		while (aux!=c.ultimo)
+		{
+			ultimo->sig=new TECAP(*aux);
+			ultimo=ultimo->sig;
+			aux=aux->sig;
+		}		
+	}
+}
+
+TColaABBPoro::operator=(const TColaABBPoro& c)
+{
+		if (this!=c)
+		{
+			primero=new TECAP(c.primero);
+			ultimo=new TECAP(c.ultimo);
+		}
+		
+}
+
+TColaABBPoro::~TColaABBPoro()
+{
+	TECAP* aux=primero;
+	if (aux==NULL)
+	{
+		ultimo=primero=NULL;
+	}
+	else
+	{
+		while (aux!=ultimo->sig)
+		{
+			primero=primero->sig;
+			delete(aux);
+			aux=primero;	
+		}	
+	}
+}
+	
+bool
+TColaABBPoro::Encolar(TABBPoro *a)
+{
+	bool ret=false;
+	if (ultimo!=NULL)
+	{
+		ultimo->sig=new TECAP();
+		ultimo->sig->arbol=arbol;
+		ultimo=ultimo->sig;
+		ret=true;
+	}	
+	else
+	{
+		ultimo=primero=new TECAP();
+		primero->arbol=arbol;
+		ret=true;
+	}
+	
+	return ret;
+}
+	
+TABBPoro*
+TColaABBPoro::Cabeza()
+{
+	TABBPoro* aux= NULL;
+	if (primero!= NULL)
+	{
+		aux=primero->arbol;
+	}
+	return aux;	
+}
+
+bool 
+TColaABBPoro::Desencolar()
+{
+	TECAP* aux=primero;
+	bool ret=false;
+	if (primero!=NULL)
+	{
+		primero=primero->sig;
+		delete(aux);
+		ret=true;
+		
+		if (primer==NULL)
+		{
+			ultimo=NULL;
+		}
+		
+	}
+
+	return ret;
+}
+
+int
+TColaABBPoro::Longitud()
+{
+	int i=0;
+	
+	while (sig!=NULL)
+	{
+		i++;
+		sig=sig->sig;
+	}
+	return i;
+}
+
+
+TECAP::TECAP(const TECAP& n)
+{
+	arbol=n.arbol;
+	sig=NULL;
+}
+
+TECAP::~TECAP()
+{
+	arbol=NULL;
+	sig=NULL;	
+}
+
+TECAP& 
+TECAP::operator=(const TECPA & n)
+{
+		if (this!=n)
+		{
+			arbol=n.arbol;
+			sig=n.sig;
+		}
 }
