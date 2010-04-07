@@ -1,16 +1,11 @@
 #include <iostream>
 using namespace std;
 
-#include "tlistaporo.h"
+#include "tvectorporo.h"
+#include "tporo.h"
+#include "tabbporo.h"
+
 /////////////////////////clase TNodoABB inicio //////
-TNodoABB::TNodoABB()
-{
-	TPoro a;
-	
-	item=a;
-	
-	iz=de=NULL;
-}
 		
 TNodoABB::TNodoABB(const TNodoABB& b)
 {
@@ -21,11 +16,13 @@ TNodoABB::TNodoABB(const TNodoABB& b)
 		
 TNodoABB::~TNodoABB()
 {
+	item=0;
 }
 		
-TNodoABB::TNodoABB& operator=(const TNodoABB& ab)
+TNodoABB&
+TNodoABB::operator=(const TNodoABB& ab)
 {
-	if (this!=ab)
+	if (this!=&ab)
 	{
 		item=ab.item;
 		de=ab.de;
@@ -34,7 +31,8 @@ TNodoABB::TNodoABB& operator=(const TNodoABB& ab)
 return *this;	
 }
 		
-bool operator==(const TNodoABB& ab) const
+bool 
+TNodoABB::operator==(const TNodoABB& ab) const
 {
 	bool ret=false;
 	
@@ -48,11 +46,6 @@ bool operator==(const TNodoABB& ab) const
 ///////////////////////////fin TNodoABB /////////
 
 //////////////////////////clase TABBNodo/////////
-TABBPoro::TABBPoro()
-{
-		nodo=NULL;
-	
-}
 	
 TABBPoro::TABBPoro(const TABBPoro & ab)
 {
@@ -86,7 +79,7 @@ TABBPoro::operator=(const TABBPoro &ab)
 		}
 		if (ab.nodo != NULL)
 		{
-			nodo = new TNodoABB(*a.nodo);
+			nodo = new TNodoABB(*ab.nodo);
 		}
 		else
 		{
@@ -118,9 +111,6 @@ TABBPoro::operator==(const TABBPoro &a) const
 }
 		
 bool 
-TABBPoro::operator!=(const TABBPoro &a) const{ return !operator==(a);};
-		
-bool 
 TABBPoro::EsVacio() const
 {
 	return nodo==NULL;
@@ -132,19 +122,19 @@ TABBPoro::Insertar(const TPoro &poro)
 	bool ret = false;
 	if (nodo != NULL)
 	{
-		if (nodo->item == poro)
+		if (nodo->item.Volumen() == poro.Volumen())
 		{
 			ret = false;
 		}
 		else
 		{
-			if (nodo->item.Volumen() > poro.Volumen())
+			if (nodo->item.Volumen()> poro.Volumen())
 			{
-				ret = nodo->iz.Insertar(c);
+				ret = nodo->iz.Insertar(poro);
 			}
 			else
 			{
-				ret = nodo->de.Insertar(c);
+				ret = nodo->de.Insertar(poro);
 			}
 		}
 	}
@@ -165,17 +155,17 @@ TABBPoro::Borrar(const TPoro& poro)
 		
 		if (nodo!=NULL)
 		{
-			if (nodo->item<poro)
+			if (nodo->item.Volumen()<poro.Volumen())
 			{
 				nodo->iz.Borrar(poro);
 			}
-			else if (nodo->item>poro)
+			else if (nodo->item.Volumen()>poro.Volumen())
 			{
 				nodo->de.Borrar(poro);
 			}
-			else if(nodo->item==poro)
+			else if(nodo->item.Volumen()==poro.Volumen())
 			{
-				borrado=reemplazar(nodo->iz,aux);
+				borrado=reemplazar(nodo->iz,*aux);
 				delete aux;
 			}
 		}
@@ -199,7 +189,7 @@ TABBPoro::reemplazar(TABBPoro actual, TABBPoro aux)
 }
 
 bool 
-TABBPoro::Buscar(const TPoro&) const
+TABBPoro::Buscar(const TPoro& poro) const
 {
 	bool encontrado=false;
 	if (nodo!=NULL)
@@ -215,7 +205,7 @@ TABBPoro::Buscar(const TPoro&) const
 		else encontrado=true;
 	}
 	
-	return enontrado;
+	return encontrado;
 }
 
 TVectorPoro 
@@ -231,13 +221,13 @@ TABBPoro::Inorden() const
 }
 
 void 
-TABBPoro::InordenAux(TVectorPoro rec, int pos) const
+TABBPoro::InordenAux(TVectorPoro& rec, int pos) const
 {
 	if (nodo!= NULL)
 	{
-		nodo->iz.InordenAux(rec, pos+1);
+		nodo->iz.InordenAux(rec, &pos+1);
 		rec.Insertar(nodo->item);
-		nodo->de.InordenAux(rec,pos+1);
+		nodo->de.InordenAux(rec,&pos+1);
 	}
 }
 
@@ -252,7 +242,7 @@ TABBPoro::Preorden() const
 }
 
 void
-TABBPoro::PreordenAux(TVectorPoro ret, int pos) const
+TABBPoro::PreordenAux(TVectorPoro& ret, int pos) const
 {
 		if (nodo!=NULL)
 		{
@@ -266,14 +256,14 @@ TVectorPoro
 TABBPoro::Postorden() const
 {
 		int pos=1;
-		TVectorPoro ret(Nodo());
+		TVectorPoro ret(Nodos());
 		PostordenAux(ret,pos);
 		
 		return ret;
 }
 
 void
-TABBPoro::PostordenAux(TVectorPoro ret, int pos)
+TABBPoro::PostordenAux(TVectorPoro& ret, int pos) const
 {
 		if (nodo!=NULL)
 		{

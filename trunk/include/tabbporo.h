@@ -7,10 +7,11 @@
 //! \file tabbporo.h
 //! \brief Cabeceras de la clase TABBPoro, TNodoABB
 
-class TNodoABB;
-
 //! \class TNodoABB
 /*!	\brief Clase que implementa un árbol binario de busqueda*/
+
+class TNodoABB;
+
 class TABBPoro
 {
 	friend class TNodoABB;
@@ -19,7 +20,7 @@ class TABBPoro
  	public:	 	
 		//! \brief Constructor por defecto de TA234Com
 		/*!	Construye un arbol 234 vacio*/
-		TABBPoro();
+		TABBPoro():nodo(NULL){};
 		//! \brief Constructor de copia de TA234Com
 		/*!	Construye un árbol 234 copia de otro*/
 		TABBPoro(const TABBPoro &);
@@ -28,7 +29,7 @@ class TABBPoro
 		~TABBPoro();
 		//! \brief Operador =
 		/*!	Asigna un árbol 234 a otro*/
-		TABBPoro& operator=(const TABBPoro &);
+		TABBPoro & operator=(const TABBPoro &);
 		//! \brief Operador ==
 		/*!	Devuelve verdadero si ambos árboles son iguales*/
 		bool operator==(const TABBPoro &) const;
@@ -49,7 +50,7 @@ class TABBPoro
 		int Altura() const ;
 		//! \brief Raiz
 		/*!	Devuelve el elemento en la raiz del arbol*/
-		TPoto Raiz() const ;
+		TPoro Raiz() const ;
 		//! \brief Nodos
 		/*!	Devuelve el número de nodos del árbol*/
 		int Nodos() const;
@@ -58,7 +59,7 @@ class TABBPoro
 		int NodosHoja() const;
 		//! \brief Niveles
 		/*!	Devuelve el recorrido por niveles del árbol*/
-		TListaCom Niveles() const;
+		TVectorPoro Niveles() const;
 
 		//! \brief operator+
 		/*! Suma de dos arboles binarios de busqueda:*/
@@ -71,16 +72,15 @@ class TABBPoro
 		//! \brief Inorden
 		/*!	Devuelve el recorrido Inorden del árbol*/
 		TVectorPoro Inorden() const;
-		void InordenAux(TVectorPoro&, int &) const;
+		void InordenAux(TVectorPoro&, int) const;
 		TVectorPoro Preorden() const;
-		void Preordenaux(TVectorPoro&, int &) const;
+		void PreordenAux(TVectorPoro&, int) const;
 		TVectorPoro Postorden() const;
-		void Postordenaux(TVectorPoro&, int&) const;
-		TVectorPoro Niveles() const;
+		void PostordenAux(TVectorPoro&, int) const;
 		bool Borrar(const TPoro&);
 			
 	private:
-		TNodoABB *nodo;
+		TNodoABB* nodo;
 		bool reemplazar(TABBPoro, TABBPoro );// en el borrado, reemplazas por el menor de la iquierda
 		
 };
@@ -92,7 +92,7 @@ class TNodoABB
 	
 		//! \brief Constructor por defecto de TA234Nodo
 		/*!	Construye un nodo de árbol 234*/
-		TNodoABB();
+		TNodoABB(){};
 		//! \brief Constructor de copia de TA234Nodo
 		/*!	Construye un nodo de árbol 234 copia de otro*/
 		TNodoABB(const TNodoABB&);
@@ -105,7 +105,7 @@ class TNodoABB
 		//! \brief Operador == 
 		/*!	Compara dos T234Nodo*/
 		bool operator==(const TNodoABB&) const;
-		
+		bool operator!=(const TNodoABB& a)const {return !operator==(a);}
 		
 	private:	
 		
@@ -113,10 +113,24 @@ class TNodoABB
 		TABBPoro iz, de;
 };
 
-class TNodoABB;
+
+class TECAP
+{
+	friend class TABBPoro;
+	public:
+		TECAP():arbol(NULL),sig(NULL){};
+		TECAP(const TECAP &);
+		~TECAP();
+		TECAP& operator=(const TECAP&);
+	
+	private:
+		TABBPoro* arbol;
+		TECAP* sig;
+};
 
 class TColaABBPoro
 {
+	friend class TECAP;
 	friend ostream &operator<<(ostream&, TColaABBPoro&);
 	public:
 		TColaABBPoro():primero(NULL), ultimo(NULL){};
@@ -125,28 +139,15 @@ class TColaABBPoro
 		TColaABBPoro& operator=(TColaABBPoro&);
 		bool Encolar(const TABBPoro* a);
 		bool Desencolar();
-		bool Esvacia(){return principio==NULL;};
+		bool Esvacia(){return primero==NULL;};
 		bool operator==(TColaABBPoro& );
 		TColaABBPoro operator+(TColaABBPoro &);
 		TABBPoro* Cabeza();
 		int Longitud();
 		
 	private:
-		TECAP *primero;
-		TECAP *ultimo;
-};
-
-class TECAP
-{
-	public:
-		TECAP():arbol(NULL),sig(NULL){};
-		TECAP(const TECAP &);
-		~TECAP();
-		TECAP& operator=(TECPA&);
-	
-	private:
-		TABBPoro* arbol;
-		TECAP* sig;
+		TECAP* primero;
+		TECAP* ultimo;
 };
 
 
