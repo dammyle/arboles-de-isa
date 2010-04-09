@@ -71,11 +71,11 @@ class TABBPoro
 		//! \brief Inorden
 		/*!	Devuelve el recorrido Inorden del árbol*/
 		TVectorPoro Inorden() const;
-		void InordenAux(TVectorPoro&, int) const;
+		void InordenAux(TVectorPoro&, int&) const;
 		TVectorPoro Preorden() const;
-		void PreordenAux(TVectorPoro&, int) const;
+		void PreordenAux(TVectorPoro&, int&) const;
 		TVectorPoro Postorden() const;
-		void PostordenAux(TVectorPoro&, int) const;
+		void PostordenAux(TVectorPoro&, int&) const;
 		bool Borrar(const TPoro&);
 			
 	private:

@@ -119,9 +119,15 @@ TABBPoro::EsVacio() const
 bool 
 TABBPoro::Insertar(const TPoro &poro)
 {
-	TPoro etic=nodo->item;
+	TPoro etic;
 	TPoro obj=poro;
 	bool ret = false;
+	
+	if(nodo!=NULL)
+	{
+		etic=nodo->item;
+	}
+	
 	if (nodo != NULL)
 	{
 		if (etic.Volumen() == obj.Volumen())
@@ -195,20 +201,28 @@ TABBPoro::reemplazar(TABBPoro actual, TABBPoro aux)
 bool 
 TABBPoro::Buscar(const TPoro& poro) const
 {
-	TPoro etic=nodo->item;
+	TPoro etic;
+	if (nodo!=NULL)
+	{
+		etic=nodo->item;
+	}
+	
 	bool encontrado=false;
 	TPoro obj=poro;
 	if (nodo!=NULL)
 	{
 		if (etic.Volumen()<obj.Volumen())
 		{
-			nodo->de.Buscar(poro);
+			encontrado=nodo->de.Buscar(poro);
 		}
 		else if (etic.Volumen()>obj.Volumen())
 		{
-			nodo->iz.Buscar(poro);
+			encontrado=nodo->iz.Buscar(poro);
 		}
-		else encontrado=true;
+		else if(etic.Volumen()==obj.Volumen())
+		{
+			 encontrado=true;
+		}
 	}
 	
 	return encontrado;
@@ -217,30 +231,40 @@ TABBPoro::Buscar(const TPoro& poro) const
 TVectorPoro 
 TABBPoro::Inorden() const
 {
-	int pos=1;
+	int pos=Nodos();
 	
 	TVectorPoro ret(Nodos());
-	
+	cout<<"Posicion que tenemos en principal"<<pos<<endl;
 	InordenAux(ret,pos);
 	
 	return ret;
 }
 
 void 
-TABBPoro::InordenAux(TVectorPoro& rec, int pos) const
+TABBPoro::InordenAux(TVectorPoro& rec, int& pos) const
 {
+	int cion=0;
+	if (nodo!=NULL && nodo->iz.Nodos()>1)
+	{
+		cion=pos-1;
+		cout<<"Posicion con la que se entra en la funcion"<<cion<<endl;
+	}
+	
 	if (nodo!= NULL)
 	{
-		nodo->iz.InordenAux(rec,pos+1);
-		rec[pos]=nodo->item;
-		nodo->de.InordenAux(rec,pos+1);
+		nodo->iz.InordenAux(rec,cion);
+		rec[cion]=nodo->item;
+		cout<<"En la posicion "<<cion<<" insertamos"<<endl;
+		cout<<rec[cion]<<endl;
+		cion++;
+		nodo->de.InordenAux(rec,cion);
 	}
 }
 
 TVectorPoro
 TABBPoro::Preorden() const
 {
-		int pos=1;
+		int pos=0;
 		
 		TVectorPoro ret(Nodos());
 		PreordenAux(ret, pos);
@@ -248,20 +272,22 @@ TABBPoro::Preorden() const
 }
 
 void
-TABBPoro::PreordenAux(TVectorPoro& ret, int pos) const
+TABBPoro::PreordenAux(TVectorPoro& ret, int& pos) const
 {
 		if (nodo!=NULL)
 		{
 			ret[pos]=nodo->item;
-			nodo->iz.PreordenAux(ret,pos+1);
-			nodo->de.PreordenAux(ret, pos+1);
+			pos+1;
+			nodo->iz.PreordenAux(ret,pos);
+			pos=pos+(nodo->iz.Nodos());
+			nodo->de.PreordenAux(ret, pos);
 		}	
 }
 
 TVectorPoro
 TABBPoro::Postorden() const
 {
-		int pos=1;
+		int pos=Nodos()-1;
 		TVectorPoro ret(Nodos());
 		PostordenAux(ret,pos);
 		
@@ -269,12 +295,17 @@ TABBPoro::Postorden() const
 }
 
 void
-TABBPoro::PostordenAux(TVectorPoro& ret, int pos) const
+TABBPoro::PostordenAux(TVectorPoro& ret, int& pos) const
 {
+	int cion=0;
+	
+	if(Nodos()>1)  cion=pos-nodo->iz.Nodos();
+	
 		if (nodo!=NULL)
 		{
-			nodo->iz.PostordenAux(ret, pos+1);
-			nodo->de.PostordenAux(ret, pos+1);
+			nodo->iz.PostordenAux(ret, cion);
+			pos-1;
+			nodo->de.PostordenAux(ret, pos);
 			ret[pos]=nodo->item;
 		}
 }
