@@ -119,16 +119,18 @@ TABBPoro::EsVacio() const
 bool 
 TABBPoro::Insertar(const TPoro &poro)
 {
+	TPoro etic=nodo->item;
+	TPoro obj=poro;
 	bool ret = false;
 	if (nodo != NULL)
 	{
-		if (nodo->item.Volumen() == poro.Volumen())
+		if (etic.Volumen() == obj.Volumen())
 		{
 			ret = false;
 		}
 		else
 		{
-			if (nodo->item.Volumen()> poro.Volumen())
+			if (etic.Volumen()> obj.Volumen())
 			{
 				ret = nodo->iz.Insertar(poro);
 			}
@@ -152,18 +154,20 @@ TABBPoro::Borrar(const TPoro& poro)
 {
 		TABBPoro *aux;
 		bool borrado=false;
+		TPoro etic=nodo->item;
+		TPoro obj=poro;
 		
 		if (nodo!=NULL)
 		{
-			if (nodo->item.Volumen()<poro.Volumen())
+			if (etic.Volumen()<obj.Volumen())
 			{
 				nodo->iz.Borrar(poro);
 			}
-			else if (nodo->item.Volumen()>poro.Volumen())
+			else if (etic.Volumen()>obj.Volumen())
 			{
 				nodo->de.Borrar(poro);
 			}
-			else if(nodo->item.Volumen()==poro.Volumen())
+			else if(etic.Volumen()==obj.Volumen())
 			{
 				borrado=reemplazar(nodo->iz,*aux);
 				delete aux;
@@ -191,14 +195,16 @@ TABBPoro::reemplazar(TABBPoro actual, TABBPoro aux)
 bool 
 TABBPoro::Buscar(const TPoro& poro) const
 {
+	TPoro etic=nodo->item;
 	bool encontrado=false;
+	TPoro obj=poro;
 	if (nodo!=NULL)
 	{
-		if (nodo->item<poro)
+		if (etic.Volumen()<obj.Volumen())
 		{
 			nodo->de.Buscar(poro);
 		}
-		else if (nodo->item>poro)
+		else if (etic.Volumen()>obj.Volumen())
 		{
 			nodo->iz.Buscar(poro);
 		}
@@ -225,9 +231,9 @@ TABBPoro::InordenAux(TVectorPoro& rec, int pos) const
 {
 	if (nodo!= NULL)
 	{
-		nodo->iz.InordenAux(rec, &pos+1);
-		rec.Insertar(nodo->item);
-		nodo->de.InordenAux(rec,&pos+1);
+		nodo->iz.InordenAux(rec,pos+1);
+		rec[pos]=nodo->item;
+		nodo->de.InordenAux(rec,pos+1);
 	}
 }
 
@@ -246,7 +252,7 @@ TABBPoro::PreordenAux(TVectorPoro& ret, int pos) const
 {
 		if (nodo!=NULL)
 		{
-			ret.Insertar(nodo->item);
+			ret[pos]=nodo->item;
 			nodo->iz.PreordenAux(ret,pos+1);
 			nodo->de.PreordenAux(ret, pos+1);
 		}	
@@ -269,7 +275,7 @@ TABBPoro::PostordenAux(TVectorPoro& ret, int pos) const
 		{
 			nodo->iz.PostordenAux(ret, pos+1);
 			nodo->de.PostordenAux(ret, pos+1);
-			ret.Insertar(nodo->item);
+			ret[pos]=nodo->item;
 		}
 }
 
@@ -280,13 +286,14 @@ TABBPoro::Niveles() const
 	TColaABBPoro c;
 	TABBPoro *aux;
 	c.Encolar((TABBPoro*)this);
+	int i=0;
 	while (!c.EsVacia())
 	{
 		aux = c.Cabeza();
 		c.Desencolar();
 		if (aux != NULL && aux->nodo != NULL)
 		{
-			ret.Insertar(aux->nodo->item);
+			ret[i]=aux->nodo->item;
 
 			if (aux->nodo->iz.nodo != NULL)
 			{
@@ -297,6 +304,7 @@ TABBPoro::Niveles() const
 				c.Encolar(&aux->nodo->de);
 			}
 		}
+		i++;
 	}
 	return ret;
 }
@@ -306,12 +314,12 @@ int
 TABBPoro::Altura() const
 {
 	int h = 0;
-	int aux1, aux2;
+	int nodo1, nodo2;
 	if (nodo != NULL)
 	{
-		nodo1 = nodo>iz.Altura();
+		nodo1 = nodo->iz.Altura();
 		nodo2 = nodo->de.Altura();
-		if (nodo > nodo2)
+		if (nodo1 > nodo2)
 		{
 			h = 1 + nodo1;
 		}
@@ -326,7 +334,7 @@ TABBPoro::Altura() const
 TPoro
 TABBPoro::Raiz() const
 {
-	return this->nodo.item;
+	return nodo->item;
 }
 
 int
@@ -362,7 +370,7 @@ TABBPoro::NodosHoja() const
 TABBPoro
 TABBPoro::operator+(TABBPoro& de) const
 {
-	TABBPoro *iz=new TABBPoro((TABBPoro*)this);
+	TABBPoro *iz=new TABBPoro(*this);
 	
 	TVectorPoro opde(de.Niveles());
 	
@@ -372,13 +380,13 @@ TABBPoro::operator+(TABBPoro& de) const
 	{
 			iz->Insertar(opde[i]);
 	}
-	return opde;
+	return *iz;
 }
 
 TABBPoro
 TABBPoro::operator-(TABBPoro& de) const//mirar que esto no sabemos muy  bien como funciona
 {
-	TABBPoro *iz=new TABBPoro((TABBPoro*)this);
+	TABBPoro *iz=new TABBPoro(*this);
 	
 	TVectorPoro opde(de.Niveles());
 	
@@ -388,142 +396,5 @@ TABBPoro::operator-(TABBPoro& de) const//mirar que esto no sabemos muy  bien com
 	{
 			iz->Insertar(opde[i]);
 	}
-	return opde;
-}
-//////////////////////////////////////Cola////////////////////
-TColaABBPoro::TColaABBPoro(const TColaABBPoro &c)
-{
-	TColaABBPoro* aux=c.primero;
-	if (c.primero==NULL)
-	{
-		primero=ultimo=NULL;
-	}
-	else
-	{
-		ultimo=primero=new TECAP(*aux);
-		aux=aux->sig;
-		while (aux!=c.ultimo)
-		{
-			ultimo->sig=new TECAP(*aux);
-			ultimo=ultimo->sig;
-			aux=aux->sig;
-		}		
-	}
-}
-
-TColaABBPoro::operator=(const TColaABBPoro& c)
-{
-		if (this!=c)
-		{
-			primero=new TECAP(c.primero);
-			ultimo=new TECAP(c.ultimo);
-		}
-		
-}
-
-TColaABBPoro::~TColaABBPoro()
-{
-	TECAP* aux=primero;
-	if (aux==NULL)
-	{
-		ultimo=primero=NULL;
-	}
-	else
-	{
-		while (aux!=ultimo->sig)
-		{
-			primero=primero->sig;
-			delete(aux);
-			aux=primero;	
-		}	
-	}
-}
-	
-bool
-TColaABBPoro::Encolar(TABBPoro *a)
-{
-	bool ret=false;
-	if (ultimo!=NULL)
-	{
-		ultimo->sig=new TECAP();
-		ultimo->sig->arbol=arbol;
-		ultimo=ultimo->sig;
-		ret=true;
-	}	
-	else
-	{
-		ultimo=primero=new TECAP();
-		primero->arbol=arbol;
-		ret=true;
-	}
-	
-	return ret;
-}
-	
-TABBPoro*
-TColaABBPoro::Cabeza()
-{
-	TABBPoro* aux= NULL;
-	if (primero!= NULL)
-	{
-		aux=primero->arbol;
-	}
-	return aux;	
-}
-
-bool 
-TColaABBPoro::Desencolar()
-{
-	TECAP* aux=primero;
-	bool ret=false;
-	if (primero!=NULL)
-	{
-		primero=primero->sig;
-		delete(aux);
-		ret=true;
-		
-		if (primer==NULL)
-		{
-			ultimo=NULL;
-		}
-		
-	}
-
-	return ret;
-}
-
-int
-TColaABBPoro::Longitud()
-{
-	int i=0;
-	
-	while (sig!=NULL)
-	{
-		i++;
-		sig=sig->sig;
-	}
-	return i;
-}
-
-
-TECAP::TECAP(const TECAP& n)
-{
-	arbol=n.arbol;
-	sig=NULL;
-}
-
-TECAP::~TECAP()
-{
-	arbol=NULL;
-	sig=NULL;	
-}
-
-TECAP& 
-TECAP::operator=(const TECPA & n)
-{
-		if (this!=n)
-		{
-			arbol=n.arbol;
-			sig=n.sig;
-		}
+	return *iz;
 }

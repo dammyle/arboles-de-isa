@@ -2,7 +2,8 @@
 #define __TABBPORO_H_
 
 #include "tporo.h"
-#include "tlistaporo.h"
+#include "tvectorporo.h"
+#include "tcolaabbporo.h"
 
 //! \file tabbporo.h
 //! \brief Cabeceras de la clase TABBPoro, TNodoABB
@@ -13,9 +14,7 @@
 class TNodoABB;
 
 class TABBPoro
-{
-	friend class TNodoABB;
- 	
+{ 	
 	friend ostream & operator<<(ostream &, TABBPoro &);
  	public:	 	
 		//! \brief Constructor por defecto de TA234Com
@@ -112,43 +111,5 @@ class TNodoABB
 		TPoro item;
 		TABBPoro iz, de;
 };
-
-
-class TECAP
-{
-	friend class TABBPoro;
-	public:
-		TECAP():arbol(NULL),sig(NULL){};
-		TECAP(const TECAP &);
-		~TECAP();
-		TECAP& operator=(const TECAP&);
-	
-	private:
-		TABBPoro* arbol;
-		TECAP* sig;
-};
-
-class TColaABBPoro
-{
-	friend class TECAP;
-	friend ostream &operator<<(ostream&, TColaABBPoro&);
-	public:
-		TColaABBPoro():primero(NULL), ultimo(NULL){};
-		~TColaABBPoro();
-		TColaABBPoro(TColaABBPoro&);
-		TColaABBPoro& operator=(TColaABBPoro&);
-		bool Encolar(const TABBPoro* a);
-		bool Desencolar();
-		bool Esvacia(){return primero==NULL;};
-		bool operator==(TColaABBPoro& );
-		TColaABBPoro operator+(TColaABBPoro &);
-		TABBPoro* Cabeza();
-		int Longitud();
-		
-	private:
-		TECAP* primero;
-		TECAP* ultimo;
-};
-
 
 #endif
