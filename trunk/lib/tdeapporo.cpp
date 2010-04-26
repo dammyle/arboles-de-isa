@@ -9,17 +9,14 @@ using namespace std;
 *
 */
 
-//enum THEAP (HEAP_MINIMO, HEAP_MAXIMO);
+TDeapPoro::TDeapPoro():v(10), posicion(2){}
 
-TDeapPoro::TDeapPoro()
-:v(10), posicion(2)
-{}
-
-bool TDeapPoro::Insertar(const TPoro &p)
+bool 
+TDeapPoro::Insertar(const TPoro &p)
 {
      bool insertado=false;
      int i,j;
-     THEAP dondeEstoy;
+     THeap dondeEstoy;
 
      if(posicion==2)
      {
@@ -40,7 +37,7 @@ bool TDeapPoro::Insertar(const TPoro &p)
                 }
                 v[posicion]=p;  //Insertamos el poro p al final del recorrido por niveles.
                 dondeEstoy=ObtenerHeap(posicion);
-                if(dondeEstoy==HEAP_MINIMO)
+                if(dondeEstoy==MINIMO)
                 {
                         i=posicion;
                         j=ObtenerAsociadoMaximo(posicion);
@@ -48,7 +45,7 @@ bool TDeapPoro::Insertar(const TPoro &p)
                         if(v[i].Volumen() > v[j].Volumen())
                         {
                                 Intercambiar(i,j);
-                                dondeEstoy=HEAP_MAXIMO;
+                                dondeEstoy=MAXIMO;//seguramente no haga falta, repasar luego;
                         }
                 }
                 else
@@ -57,11 +54,11 @@ bool TDeapPoro::Insertar(const TPoro &p)
                     i=ObtenerAsociadoMinimo(posicion);
                     if(v[i].Volumen()>v[j].Volumen())
                     {
-                        dondeEstoy=HEAP_MINIMO;
+                        dondeEstoy=MINIMO;
                     }
                 }
            }
-           if(dondeEstoy==HEAP_MINIMO)
+           if(dondeEstoy==MINIMO)
            {
                FlotarMinimo(i);
            }
@@ -75,10 +72,11 @@ bool TDeapPoro::Insertar(const TPoro &p)
      return insertado;
 }
 
-THEAP TDeapPoro::ObtenerHeap(int i) const
+THeap
+TDeapPoro::ObtenerHeap(int i) const
 {
       int posicionEnNivel, nodosEnNivel;
-      THEAP lugar;
+      THeap lugar;
 
       posicionEnNivel= i - pow (2.0, (log2(i) -1));
       nodosEnNivel= pow (2.0, log2(i));
@@ -94,7 +92,8 @@ THEAP TDeapPoro::ObtenerHeap(int i) const
       return lugar;
 }
 
-int TDeapPoro::ObtenerAsociadoMaximo(int i) const
+int 
+TDeapPoro::ObtenerAsociadoMaximo(int i) const
 {
     int j;
 
@@ -107,12 +106,14 @@ int TDeapPoro::ObtenerAsociadoMaximo(int i) const
     return j;
 }
 
-int TDeapPoro::ObtenerAsociadoMinimo(int j) const
+int 
+TDeapPoro::ObtenerAsociadoMinimo(int j) const
 {
-    return j-pow(2.0,(log2(j)-1));;
+    return j-pow(2.0,(log2(j)-1));
 }
 
-void TDeapPoro::Intercambiar(int i, int j)
+void 
+TDeapPoro::Intercambiar(int i, int j)
 {
      TPoro aux;
 
@@ -121,7 +122,8 @@ void TDeapPoro::Intercambiar(int i, int j)
      v[j]=aux;
 }
 
-void TDeapPoro::FlotarMinimo(int i)
+void 
+TDeapPoro::FlotarMinimo(int i)
 {
      while(i>2 && (v[i].Volumen() < v[i].Volumen()/2))
      {
@@ -130,7 +132,8 @@ void TDeapPoro::FlotarMinimo(int i)
      }
 }
 
-void TDeapPoro::FlotarMaximo(int j)
+void 
+TDeapPoro::FlotarMaximo(int j)
 {
      while(j>2 && (v[j].Volumen() < v[j].Volumen()/2))
      {
@@ -139,7 +142,8 @@ void TDeapPoro::FlotarMaximo(int j)
      }
 }
 
-bool TDeapPoro::BorrarMin()
+bool 
+TDeapPoro::BorrarMin()
 {
         bool borrado;
         int i,j;
@@ -191,7 +195,8 @@ bool TDeapPoro::BorrarMin()
 }
 
 
-TVectorPoro TDeapPoro::Niveles() const
+TVectorPoro 
+TDeapPoro::Niveles() const
 {
      int i;
 
@@ -205,7 +210,8 @@ TVectorPoro TDeapPoro::Niveles() const
 }
 
 
-TVectorPoro TDeapPoro::Inorden() const
+TVectorPoro 
+TDeapPoro::Inorden() const
 {
      TVectorPoro v(posicion-2);
      int pos=1, i=1;
@@ -215,7 +221,8 @@ TVectorPoro TDeapPoro::Inorden() const
      return v;
 }
 
-void TDeapPoro::InordenAux(TVectorPoro &vi, int &pos, int i) const
+void 
+TDeapPoro::InordenAux(TVectorPoro &vi, int &pos, int i) const
 {
      if(i<posicion) //Estoy en el Deap
      {
@@ -226,7 +233,8 @@ void TDeapPoro::InordenAux(TVectorPoro &vi, int &pos, int i) const
      }
 }
 
-bool TDeapPoro::Buscar(const TPoro &p)
+bool 
+TDeapPoro::Buscar(const TPoro &p)
 {
 
 }
