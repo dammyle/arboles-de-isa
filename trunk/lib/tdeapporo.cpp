@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include "tlistaporo.h"
+#include "tvectorporo.h"
 #include "tdeapporo.h"
 using namespace std;
 
@@ -10,6 +11,58 @@ using namespace std;
 */
 
 TDeapPoro::TDeapPoro():v(10), posicion(2){}
+
+TDeapPoro::~TDeapPoro()
+{
+	posicion=0;		
+}
+
+TDeapPoro&
+TDeapPoro::operator=(const TDeapPoro &dp)
+{
+        if(this!=&dp)
+        {
+                v=dp.v;
+                posicion=dp.posicion;
+        }
+        return *this;
+}
+
+TDeapPoro::TDeapPoro( const TDeapPoro &d)
+{
+		if (this!=&d)
+		{
+			posicion=d.posicion;
+			
+			v.TVectorPoro::operator=(d.v);
+		}
+}
+
+bool
+TDeapPoro::operator==(const TDeapPoro &d) 
+{
+	int i=0;
+	bool iguales=true;
+	
+	if (v.Longitud()>0 && d.v.Longitud()>0 &&  v.Longitud()==d.v.Longitud())
+	{
+		while (i<v.Longitud() && iguales)
+		{
+			if (v[i]!=d.v[i])
+			{
+				iguales=false;
+			}
+			
+		}
+		
+	}
+	else
+	{
+		iguales=false;
+	}
+	
+	return iguales;
+}
 
 bool 
 TDeapPoro::Insertar(const TPoro &p)
@@ -82,11 +135,11 @@ TDeapPoro::ObtenerHeap(int i) const
       nodosEnNivel= pow (2.0, log2(i));
       if(posicionEnNivel<nodosEnNivel/2)
       {
-          lugar=HEAP_MINIMO;
+          lugar=MINIMO;
       }
       else
       {
-          lugar=HEAP_MAXIMO;
+          lugar=MAXIMO;
       }
 
       return lugar;
@@ -125,7 +178,7 @@ TDeapPoro::Intercambiar(int i, int j)
 void 
 TDeapPoro::FlotarMinimo(int i)
 {
-     while(i>2 && (v[i].Volumen() < v[i].Volumen()/2))
+     while(i>2 && (v[i].Volumen() < v[i/2].Volumen()))//v[i].Volumen()/2))
      {
          Intercambiar(i,i/2);
          i=i/2;
@@ -180,7 +233,7 @@ TDeapPoro::BorrarMin()
                                 i=2*i;
                         }
                         //Paso 3.
-                        j=ObtenerAsociadoEnMaximo(i);
+                        j=ObtenerAsociadoMaximo(i);
                         if(v[i].Volumen() > v[j].Volumen())     //Hago flotar en maximo.
                         {
                                 Intercambiar(i,j);
@@ -213,8 +266,56 @@ TDeapPoro::Niveles() const
 TVectorPoro 
 TDeapPoro::Inorden() const
 {
-     TVectorPoro v(posicion-2);
+     TVectorPoro ret(v.Longitud()-1);
+     int pos=pow(2.0,(log2(v.Longitud()-1)-1));
+     int i=pos;
+
+     InordenAux(ret,pos,i);
+
+     return ret;
+}
+
+void 
+TDeapPoro::InordenAux(TVectorPoro &ret, int &pos, int i) const
+{
+     if(i<0) //Estoy en el Deap
+     {
+          InordenAux(ret,pos,2*i);
+          ret[pos]=v[i];
+          pos++;
+          InordenAux(ret,pos,2*i+1);
+     }
+}
+
+TVectorPoro 
+TDeapPoro::Preorden() const
+{
+     TVectorPoro ret(v.Longitud()-1);//para quitar la raiz;
      int pos=1, i=1;
+
+     PreordenAux(ret,pos,i);
+
+     return v;
+}
+
+void 
+TDeapPoro::PreordenAux(TVectorPoro &ret, int &pos, int i) const
+{
+     if(i<v.Longitud()) //Estoy en el Deap
+     {
+          PreordenAux(ret,pos,2*i);
+          ret[pos]=v[i];
+          pos++;
+          PreordenAux(ret,pos,2*i+1);
+     }
+}
+
+TVectorPoro 
+TDeapPoro::Postorden() const
+{
+     TVectorPoro v(v.Longitud()-1);
+     int pos=v.Longitud()-1;
+     int i=v.Longitud();
 
      InordenAux(v,pos,i);
 
@@ -222,19 +323,30 @@ TDeapPoro::Inorden() const
 }
 
 void 
-TDeapPoro::InordenAux(TVectorPoro &vi, int &pos, int i) const
+TDeapPoro::PostordenAux(TVectorPoro &ret, int &pos, int i) const
 {
-     if(i<posicion) //Estoy en el Deap
+     if(i>0) //Estoy en el Deap
      {
-          InordenAux(vi,pos,2*i);
-          vi[pos]=v[i];
-          pos++;
-          InordenAux(vi,pos,2*i+1);
+          PreordenAux(ret,pos,i-1);
+          PreordenAux(ret,pos,i-2);
+          ret[pos]=v[i];
+          pos--;
      }
 }
-
 bool 
 TDeapPoro::Buscar(const TPoro &p)
 {
-
+	int pos=0;
+	
+	bool encontrado=false;
+	
+	while (pos<v.Longitud())
+	{
+		if (v[pos]==p)
+		{
+			encontrado=true;
+		}
+	}
+	return encontrado;
 }
+
