@@ -1,38 +1,32 @@
 #include <iostream>
-#include "tabbporo.h"
+#include "tdeapporo.h"
 using namespace std;
 
 int
 main(void)
 {
+/****************************************************/
+/***************** CONSTRUCTOR DE COPIA, "=", "==" */
 /***************************************************/
-/***************** INSERTAR			   */
-/***************************************************/
-  TABBPoro a;
+  TDeapPoro a,c;
 
-  TPoro p1(1,2,1,"rojo");
-  TPoro p2(1,2,2,"rojo");
-  TPoro p3(1,2,3,"rojo");
-  TPoro p4(1,2,4,"rojo");
-  TPoro p5(1,2,5,"rojo");
-  TPoro p6(1,2,6,"rojo");
-  TPoro p7(1,2,7,"rojo");
-
-  a.Insertar(p5);
-  a.Insertar(p2);
+  TPoro p1(1,2,3,"rojo");
   a.Insertar(p1);
-  a.Insertar(p3);
-  a.Insertar(p6);
 
-  if(a.Insertar(p7))
-        cout << "Insertado" << endl;
-  else
-	cout << "No insertado" << endl;
+  TDeapPoro b(a);
+  c=b;
+  
+  cout<<"por aqui"<<endl;
 
-  if(a.Insertar(p7))
-        cout << "Insertado" << endl;
-  else
-	cout << "No insertado" << endl;
+  if ( a==b )
+  	cout << "IGUALES" << endl;
+  else 
+	cout << "DISTINTOS" << endl;
+
+  if ( c==b )
+  	cout << "IGUALES" << endl;
+  else 
+	cout << "DISTINTOS" << endl;
 
   return 1;
 }

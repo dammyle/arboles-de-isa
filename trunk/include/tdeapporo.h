@@ -4,9 +4,6 @@
 #include "tvectorporo.h"
 using namespace std;
 
-
-enum THeap {MINIMO, MAXIMO};
-
 class TDeapPoro
 {
 	friend class TVectorPoro;
@@ -25,7 +22,7 @@ class TDeapPoro
 		// Sobrecarga del operador igualdad
 		bool operator==(const TDeapPoro &);
 		// Devuelve TRUE si el deap está vacío, FALSE en caso contrario
-		bool EsVacio(){return posicion==1;};
+		bool EsVacio(){return posicion==2;};
 		// Inserta el elemento en el deap
 		bool Insertar(const TPoro &);
 		// Borra el elemento máximo en el deap
@@ -33,11 +30,11 @@ class TDeapPoro
 		// Borra el elemento mínimo en el deap
 		bool BorrarMin();
 		// Devuelve el elemento máximo en el deap
-		TPoro Max(){if(v.Longitud()>=3) return v[3];};
+		TPoro Max(){if(v.Longitud()>=4) return v[3];};
 		// Devuelve el elemento mínimo en el deap
-		TPoro Min(){if(v.Longitud()>=2) return v[2];};
+		TPoro Min(){if(v.Longitud()>=3) return v[2];};
 		// Devuelve la altura del deap (la altura de un deap vacío es 0)
-		int Altura(){if(posicion>1) return log2(posicion-1);};
+		int Altura() const;
 		// Devuelve el número de nodos del deap (un deap vacío posee 0 nodos)
 		int Nodos(){return v.Longitud();};
 		// Devuelve  el recorrido en inorden
@@ -51,7 +48,7 @@ class TDeapPoro
 		
 
 	private:
-		THeap ObtenerHeap(int i) const;
+		bool ObtenerHeap(int i) const;
 		int ObtenerAsociadoMaximo(int i) const;
 		int ObtenerAsociadoMinimo(int j) const;
 		void Intercambiar(int i, int j);
@@ -65,6 +62,8 @@ class TDeapPoro
 		TVectorPoro v;
 		// Indica la próxima posición libre en el vector
 		int posicion;
+		
+		bool THeap;//0 minimo; 1 maximo
 
 };
 
