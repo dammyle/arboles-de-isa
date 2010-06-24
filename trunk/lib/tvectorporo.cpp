@@ -68,7 +68,7 @@ TVectorPoro::operator=(const TVectorPoro &t)
 bool
 TVectorPoro::operator== (const TVectorPoro &t) const
 {
-	bool ret = this->dimension == t.dimension;
+	bool ret = dimension == t.dimension;
 	
 	for (int i = 0 ;ret && i < t.dimension; i++)
 	{

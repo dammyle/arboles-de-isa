@@ -70,7 +70,9 @@ TPoro::operator= (const TPoro& n)
 bool
 TPoro::operator==(const TPoro& n) const
 {
-	return(x==n.x && y==n.y && volumen==n.volumen && color==n.color);
+	
+	  if(n.EsVacio() && this->EsVacio())return true;
+	return(x==n.x && y==n.y && volumen==n.volumen && strcmp(color,n.color)==0);
 }
 
 bool

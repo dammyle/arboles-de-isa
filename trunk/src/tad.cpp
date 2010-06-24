@@ -1,32 +1,36 @@
 #include <iostream>
-#include "tdeapporo.h"
+#include "tabbporo.h"
 using namespace std;
 
 int
 main(void)
 {
-/****************************************************/
-/***************** CONSTRUCTOR DE COPIA, "=", "==" */
-/***************************************************/
-  TDeapPoro a,c;
+/*******************************************************************/
+/***************** CONSTR. COPIA , "=" ; posible copia de punteros */
+/*******************************************************************/
+  
+  TABBPoro a,c;
 
-  TPoro p1(1,2,3,"rojo");
+  TPoro p1(1,2,1,"rojo");
+  TPoro p2(1,2,2,"verde");
+
   a.Insertar(p1);
 
-  TDeapPoro b(a);
+  TABBPoro b(a);
   c=b;
-  
-  cout<<"por aqui"<<endl;
 
-  if ( a==b )
-  	cout << "IGUALES" << endl;
-  else 
-	cout << "DISTINTOS" << endl;
+  a.Insertar(p2);
+  if( a.Inorden() == b.Inorden() )
+        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
+  else
+	cout << "CORRECTO CONSTRUCTOR DE COPIA" << endl;
 
-  if ( c==b )
-  	cout << "IGUALES" << endl;
-  else 
-	cout << "DISTINTOS" << endl;
+
+  b.Insertar(p2);
+  if( b.Inorden() == c.Inorden() )
+        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
+  else
+	cout << "CORRECTA ASIGNACION " << endl;
 
   return 1;
 }

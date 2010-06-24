@@ -20,7 +20,7 @@ class TDeapPoro
 		TDeapPoro & operator=(const TDeapPoro &);
 		// MÉTODOS
 		// Sobrecarga del operador igualdad
-		bool operator==(const TDeapPoro &);
+		bool operator==(const TDeapPoro &)const;
 		// Devuelve TRUE si el deap está vacío, FALSE en caso contrario
 		bool EsVacio(){return posicion==2;};
 		// Inserta el elemento en el deap
@@ -30,13 +30,13 @@ class TDeapPoro
 		// Borra el elemento mínimo en el deap
 		bool BorrarMin();
 		// Devuelve el elemento máximo en el deap
-		TPoro Max(){if(v.Longitud()>=4) return v[3];};
+		TPoro Max()const;
 		// Devuelve el elemento mínimo en el deap
-		TPoro Min(){if(v.Longitud()>=3) return v[2];};
+		TPoro Min()const;
 		// Devuelve la altura del deap (la altura de un deap vacío es 0)
 		int Altura() const;
 		// Devuelve el número de nodos del deap (un deap vacío posee 0 nodos)
-		int Nodos(){return v.Longitud();};
+		int Nodos() const;
 		// Devuelve  el recorrido en inorden
 		TVectorPoro  Inorden() const;
 		// Devuelve  el recorrido en preorden
@@ -58,6 +58,16 @@ class TDeapPoro
 		void PreordenAux(TVectorPoro &, int &, int) const;
 		void PostordenAux(TVectorPoro &, int &, int) const;
 		bool Buscar(const TPoro &p);
+		 /** \brief FlotarMin
+		* Hunde un nodo
+		* \param i posicion
+		*/
+		void FlotarMin(int i);
+		/** \brief FlotarMax
+		* Hunde un nodo
+		* \param i posicion
+		*/
+		void FlotarMax(int j);
 		// Almacena los poros
 		TVectorPoro v;
 		// Indica la próxima posición libre en el vector
