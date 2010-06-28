@@ -129,21 +129,30 @@ TColaABBPoro::Longitud() const
 	TECAP* aux=primero;
 	while (aux!=NULL)
 	{
-		i++;
 		aux=aux->sig;
+		i++;
 	}
 	return i;
 }
 
-bool TColaABBPoro::EsVacia()
+TColaABBPoro 
+TColaABBPoro::operator+(const TColaABBPoro &cola_ins)
 {
-    bool ret=false;
-    if(primero==NULL && ultimo==NULL)
+    TColaABBPoro nueva_cola(*this);
+    TECAP* aux=cola_ins.primero;
+
+    while(aux!=NULL)
     {
-        ret=true;
+        if(!(*nueva_cola.primero->arbol).Buscar(aux->arbol->nodo->item))
+        {
+            nueva_cola.Encolar(aux->arbol);
+        }
+        aux=aux->sig;
     }
 
-    return ret;
+    return nueva_cola;
+
+
 }
 
 ostream& 
@@ -189,10 +198,10 @@ TECAP::~TECAP()
 TECAP& 
 TECAP::operator=(const TECAP & n)
 {
-		if (this!=&n)
-		{
-			arbol=n.arbol;
-			sig=n.sig;
-		}
+	if (this!=&n)
+	{
+		arbol=n.arbol;
+		sig=n.sig;
+	}
 }
 

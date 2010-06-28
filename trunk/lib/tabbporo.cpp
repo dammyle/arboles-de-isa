@@ -317,34 +317,40 @@ TABBPoro::PostordenAux(TVectorPoro& ret, int& pos) const
 
 TVectorPoro 
 TABBPoro::Niveles() const
-{
-	TVectorPoro ret;
-	TColaABBPoro c;
+{ 
+	TVectorPoro niveles(Nodos());
+	TColaABBPoro cola;
 	TABBPoro *aux;
-	c.Encolar((TABBPoro*)this);
-	int i=0;
-	while (!c.EsVacia())
+	int posicion=0;
+
+	if(!this->EsVacio())
 	{
-		aux = c.Cabeza();
-		c.Desencolar();
-		if (aux != NULL && aux->nodo != NULL)
-		{
-			ret[i]=aux->nodo->item;
-
-			if (aux->nodo->iz.nodo != NULL)
-			{
-				c.Encolar(&aux->nodo->iz);
-			}
-			if (aux->nodo->de.nodo != NULL)
-			{
-				c.Encolar(&aux->nodo->de);
-			}
-		}
-		i++;
+		cola.Encolar((TABBPoro*) this);
 	}
-	return ret;
-}
 
+
+	while(!cola.EsVacia())
+	{
+		aux=cola.Cabeza(); //aux sera la cabeza de la cola
+		cola.Desencolar(); //desencolamos la cabeza
+		posicion++;
+
+		niveles[posicion]=aux->Raiz();
+
+		if(!aux->nodo->iz.EsVacio()) //si el hijo izquierdo no esta vacio
+		{
+		TABBPoro* hijoIz = new TABBPoro(aux->nodo->iz);
+		cola.Encolar(hijoIz);
+		}
+		if(!aux->nodo->de.EsVacio()) //si el hijo derecho no esta vacio
+		{
+		TABBPoro* hijoDe = new TABBPoro(aux->nodo->de);
+		cola.Encolar(hijoDe);
+		}
+	}
+
+	return niveles;
+}
 
 int
 TABBPoro::Altura() const
@@ -409,33 +415,35 @@ TABBPoro::NodosHoja() const
 
 
 TABBPoro
-TABBPoro::operator+(TABBPoro& de) const
+TABBPoro::operator+(TABBPoro& abb) const
 {
-	TABBPoro *iz=new TABBPoro(*this);
-	
-	TVectorPoro opde(de.Niveles());
-	
-	int i=0;
-	
-	while(i< opde.Longitud())
-	{
-			iz->Insertar(opde[i]);
-	}
-	return *iz;
+        TABBPoro aux(*this);
+        TVectorPoro derecha=abb.Niveles();
+        int i=1;
+        int tam=derecha.Longitud();
+
+		while (i<tam)
+		{
+			aux.Insertar(derecha[i]);
+			i++;
+		}
+ 
+        return aux;
 }
 
 TABBPoro
 TABBPoro::operator-(TABBPoro& de) const//mirar que esto no sabemos muy  bien como funciona
 {
-	TABBPoro *iz=new TABBPoro(*this);
+	TABBPoro aux(*this);
+	TVectorPoro resto=de.Niveles();
+	int i =1;
+	int tam=resto.Longitud();
 	
-	TVectorPoro opde(de.Niveles());
-	
-	int i=0;
-	
-	while(i< opde.Longitud())
+	while (i<tam)
 	{
-			iz->Insertar(opde[i]);
+		aux.Borrar(resto[i]);
+		i++;
 	}
-	return *iz;
+	
+	return aux;
 }

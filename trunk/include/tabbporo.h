@@ -16,7 +16,7 @@ class TColaABBPoro;
 
 class TABBPoro
 { 	
-	
+	friend class TColaABBPoro;
 	friend ostream & operator<<(ostream &, TABBPoro &);
  	public:	 	
 		//! \brief Constructor por defecto de TA234Com
@@ -88,6 +88,7 @@ class TABBPoro
 
 class TNodoABB
 {
+	friend class TColaABBPoro;
 	friend class TABBPoro;
 	public:
 	

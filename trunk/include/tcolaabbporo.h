@@ -67,17 +67,12 @@ class TColaABBPoro
         * \return Devuelve la suma
         */
         TColaABBPoro operator+(const TColaABBPoro &);
-        /** \brief Buscar(TABBPoro* &)
-        * Busca un poro en el vector
-        * \param poro Poro a buscar
-        * \return Devuelve si es verdadero o falso
-        */
-        bool Buscar(TABBPoro* &);
+       
         /** \brief EsVacia()
         * Mira si la cola es vacia o no
         * \return Devuelve si es verdadero o falso
         */
-        bool EsVacia();
+        bool EsVacia() {return primero==NULL && ultimo==NULL;};
         /** \brief Encolar
         * Encola un poro en la cola
         * \param a Poro a encolar

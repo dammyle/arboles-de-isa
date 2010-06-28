@@ -73,7 +73,6 @@ TDeapPoro::Insertar(const TPoro &p)
      {
            if(Buscar(p)) //Si el poro p se ha encontrado.
            {
-			   cout<<"dentro de la funcion buscar"<<endl;
                 insertado=false;
                 salir=true;
            }
@@ -528,16 +527,10 @@ int
 TDeapPoro::Nodos() const
 {
     int i=0;
-    cout<<"debemos entrar aqui seguro"<<endl;
-    if(posicion==2)
-    {
-		cout<<"debemos entrar aqui seguro"<<endl;
-        i=0;
-    }
-    else
-    {
-        i=posicion-1;
-    }
+
+    if(posicion==2) i=0;
+    else i=posicion-1;
+
     return i;
 }
 
