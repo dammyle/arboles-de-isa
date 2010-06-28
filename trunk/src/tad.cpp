@@ -1,36 +1,23 @@
 #include <iostream>
-#include "tabbporo.h"
+#include "tcolaabbporo.h"
+
 using namespace std;
 
 int
 main(void)
 {
-/*******************************************************************/
-/***************** CONSTR. COPIA , "=" ; posible copia de punteros */
-/*******************************************************************/
+/********************************************/
+/***************** ENCOLAR NULL, ARBOL VACIO*/
+/********************************************/
   
-  TABBPoro a,c;
+  TColaABBPoro c;
+  TABBPoro a;
 
-  TPoro p1(1,2,1,"rojo");
-  TPoro p2(1,2,2,"verde");
+  c.Encolar(NULL);
+  c.Encolar(&a);
 
-  a.Insertar(p1);
+  cout<<c<<endl;
 
-  TABBPoro b(a);
-  c=b;
+  return 1; 
 
-  a.Insertar(p2);
-  if( a.Inorden() == b.Inorden() )
-        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
-  else
-	cout << "CORRECTO CONSTRUCTOR DE COPIA" << endl;
-
-
-  b.Insertar(p2);
-  if( b.Inorden() == c.Inorden() )
-        cout << "MAL! SE HAN COPIADO PUNTEROS" << endl;
-  else
-	cout << "CORRECTA ASIGNACION " << endl;
-
-  return 1;
 }

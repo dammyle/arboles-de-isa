@@ -91,7 +91,7 @@ TColaABBPoro::Encolar(TABBPoro* a)
 }
 	
 TABBPoro*
-TColaABBPoro::Cabeza()
+TColaABBPoro::Cabeza() const
 {
 	TABBPoro* aux= NULL;
 	if (primero!= NULL)
@@ -123,7 +123,7 @@ TColaABBPoro::Desencolar()
 }
 
 int
-TColaABBPoro::Longitud()
+TColaABBPoro::Longitud() const
 {
 	int i=0;
 	TECAP* aux=primero;
@@ -135,7 +135,45 @@ TColaABBPoro::Longitud()
 	return i;
 }
 
+bool TColaABBPoro::EsVacia()
+{
+    bool ret=false;
+    if(primero==NULL && ultimo==NULL)
+    {
+        ret=true;
+    }
 
+    return ret;
+}
+
+ostream& 
+operator<<(ostream &os,const TColaABBPoro& cola)
+{
+
+    TColaABBPoro p(cola);
+    os << '(';
+    while(!p.EsVacia())
+    {
+        if(p.Cabeza()!=NULL)
+        {
+            os << p.Cabeza()->Raiz();
+        }
+        else
+        {
+            os << ".";
+        }
+        if(p.primero!=p.ultimo)
+        {
+            os << " ";
+        }
+        p.Desencolar();
+    }
+    os << ')';
+
+    return os;
+}
+
+//////////////////////nodo de la cola///////////////////
 TECAP::TECAP(const TECAP& n)
 {
 	arbol=n.arbol;

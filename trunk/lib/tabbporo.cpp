@@ -14,10 +14,7 @@ TNodoABB::TNodoABB(const TNodoABB& b)
 	de=b.de;
 }
 		
-TNodoABB::~TNodoABB()
-{
-	item=0;
-}
+TNodoABB::~TNodoABB(){}
 		
 TNodoABB&
 TNodoABB::operator=(const TNodoABB& ab)
@@ -43,6 +40,7 @@ TNodoABB::operator==(const TNodoABB& ab) const
 		
 	return ret;
 }
+
 ///////////////////////////fin TNodoABB /////////
 
 //////////////////////////clase TABBNodo/////////
@@ -92,22 +90,13 @@ TABBPoro::operator=(const TABBPoro &ab)
 bool 
 TABBPoro::operator==(const TABBPoro &a) const
 {
-	bool ret = false;
-	if (nodo == NULL && a.nodo == NULL)
-	{
-		ret = true;
-	}
-	else if (nodo != NULL && a.nodo != NULL)
-	{
-		if (nodo->item == a.nodo->item)
-		{
-			if (nodo->iz == a.nodo->iz && nodo->de == a.nodo->de)
-			{
-				ret = true;
-			}
-		}
-	}
-	return ret;
+	TVectorPoro c;
+	TVectorPoro b;
+
+	c=this->Inorden();
+	b=a.Inorden();
+
+	return c==b;
 }
 		
 bool 
@@ -155,47 +144,76 @@ TABBPoro::Insertar(const TPoro &poro)
 	return ret;
 }
 
-bool 
-TABBPoro::Borrar(const TPoro& poro)
+bool TABBPoro::Borrar(const TPoro &p)
 {
-		TABBPoro *aux;
-		bool borrado=false;
-		TPoro etic=nodo->item;
-		TPoro obj=poro;
+        TNodoABB *aux;
+        bool borrado;
+        TABBPoro mayoriz;
+        TPoro mayor;
+
+		double pvolum=nodo->item.Volumen();
+		TPoro thisvolum=p;
 		
-		if (nodo!=NULL)
-		{
-			if (etic.Volumen()<obj.Volumen())
-			{
-				nodo->iz.Borrar(poro);
-			}
-			else if (etic.Volumen()>obj.Volumen())
-			{
-				nodo->de.Borrar(poro);
-			}
-			else if(etic.Volumen()==obj.Volumen())
-			{
-				borrado=reemplazar(nodo->iz,*aux);
-				delete aux;
-			}
-		}
-	return borrado;
+        if(nodo == NULL)        //El Poro no se encuentra en el arbol.
+                borrado=false;
+        else
+        {
+                if(thisvolum.Volumen() < pvolum)
+                {
+                        borrado=nodo->iz.Borrar(p);
+                }
+                else
+                {
+                    
+                        if(thisvolum.Volumen() > pvolum)
+                                borrado=nodo->de.Borrar(p);
+                        else if(thisvolum.Volumen()==pvolum)
+                        {
+                                borrado=true;
+                                if(nodo->iz.nodo==NULL && nodo->de.nodo==NULL)//estas en una hoja
+                                {
+                                        delete nodo;
+                                        nodo=NULL;
+                                }
+                                else if(nodo->de.nodo==NULL && nodo->iz.nodo!=NULL)//tiene hijo izquierda
+                                {
+                                        aux=nodo;
+                                        nodo=aux->iz.nodo;
+                                        aux->iz.nodo=NULL;
+                                        delete aux;
+                                }
+                                else if(nodo->de.nodo!=NULL && nodo->iz.nodo==NULL)//tiene hijo derecha
+                                {
+                                        aux=nodo;
+                                        nodo=aux->de.nodo;
+                                        aux->de.nodo=NULL;
+                                        delete aux;
+                                }
+                                else
+                                {
+                                        mayor=nodo->iz.reemplazar();
+                                        nodo->item=mayor;
+                                        nodo->iz.Borrar(mayor);
+                                }
+                        }
+                }
+        }
+        return borrado;
 }
 
-bool 
-TABBPoro::reemplazar(TABBPoro actual, TABBPoro aux)
+TPoro 
+TABBPoro::reemplazar()const //reemplazas por el mayor de la izquierda
 {
-	bool reemplazado=false;
-	if (actual.nodo->de.EsVacio())
-	{
-		aux.nodo->item=actual.nodo->item;
-		aux=actual;
-		actual=actual.nodo->iz;
-		reemplazado=true;
-	}
-	else reemplazar(actual.nodo->de,aux);
-	
-	return reemplazado;
+        TPoro p;
+        TNodoABB *aux=NULL;
+
+        aux=nodo;
+        while(aux->de.nodo!=NULL)
+        {
+                aux=aux->de.nodo;
+        }
+        p=aux->item;
+        return p;
 }
 
 bool 
@@ -228,37 +246,24 @@ TABBPoro::Buscar(const TPoro& poro) const
 	return encontrado;
 }
 
-TVectorPoro 
-TABBPoro::Inorden() const
+TVectorPoro TABBPoro::Inorden() const
 {
-	int pos=Nodos();
-	
-	TVectorPoro ret(Nodos());
-	cout<<"Posicion que tenemos en principal"<<pos<<endl;
-	InordenAux(ret,pos);
-	
-	return ret;
+       int posicion = 1;
+       TVectorPoro v(Nodos());
+       InordenAux(v, posicion);
+       return v;
 }
 
 void 
 TABBPoro::InordenAux(TVectorPoro& rec, int& pos) const
 {
-	int cion=0;
-	if (nodo!=NULL && nodo->iz.Nodos()>1)
-	{
-		cion=pos-1;
-		cout<<"Posicion con la que se entra en la funcion"<<cion<<endl;
-	}
-	
-	if (nodo!= NULL)
-	{
-		nodo->iz.InordenAux(rec,cion);
-		rec[cion]=nodo->item;
-		cout<<"En la posicion "<<cion<<" insertamos"<<endl;
-		cout<<rec[cion]<<endl;
-		cion++;
-		nodo->de.InordenAux(rec,cion);
-	}
+	  if(nodo!=NULL)
+      {
+			nodo->iz.InordenAux(rec,pos);
+			rec[pos]=nodo->item;
+			pos++;
+			nodo->de.InordenAux(rec,pos);
+      }
 }
 
 TVectorPoro
@@ -365,7 +370,12 @@ TABBPoro::Altura() const
 TPoro
 TABBPoro::Raiz() const
 {
-	return nodo->item;
+	TPoro aux;
+	if (!this->EsVacio())
+	{
+		return nodo->item;
+	}
+	else return aux;
 }
 
 int

@@ -541,7 +541,7 @@ TDeapPoro::Nodos() const
     return i;
 }
 
-ostream & operator<<(ostream &os, const TDeapPoro &deap)
+ostream& operator<<(ostream &os, const TDeapPoro &deap)
 {
     TVectorPoro vector;
 

@@ -12,9 +12,11 @@
 /*!	\brief Clase que implementa un árbol binario de busqueda*/
 
 class TNodoABB;
+class TColaABBPoro;
 
 class TABBPoro
 { 	
+	
 	friend ostream & operator<<(ostream &, TABBPoro &);
  	public:	 	
 		//! \brief Constructor por defecto de TA234Com
@@ -80,7 +82,7 @@ class TABBPoro
 			
 	private:
 		TNodoABB* nodo;
-		bool reemplazar(TABBPoro, TABBPoro );// en el borrado, reemplazas por el menor de la iquierda
+		TPoro reemplazar( )const;// en el borrado, reemplazas por el mayor de la iquierda
 		
 };
 
